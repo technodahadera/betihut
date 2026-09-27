@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ביטחון ובטיחות בטכנודע | עדכון הנהלה</title>
+  <meta name="description" content="מערכת הצגה לישיבת הנהלה בנושא ביטחון ובטיחות בטכנודע" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --orange:#f7931e;
+      --lime:#9ccB3b;
+      --pink:#e9197f;
+      --blue:#56b5df;
+      --yellow:#f6d72f;
+      --ink:#3f3a3c;
+      --muted:#777176;
+      --bg:#f6f8fa;
+      --card:#ffffff;
+      --line:#e7eaee;
+      --danger:#c64343;
+      --success:#2f8a64;
+      --shadow:0 18px 45px rgba(46,45,50,.10);
+      --radius:28px;
+    }
+
+    *{box-sizing:border-box}
+    html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family:"Rubik",Arial,sans-serif;overflow:hidden}
+    button,input{font:inherit}
+    button{cursor:pointer}
+
+    .app{height:100vh;display:grid;grid-template-columns:292px 1fr;gap:0}
+
+    /* SIDEBAR */
+    .sidebar{
+      background:#fff;
+      border-left:1px solid var(--line);
+      padding:24px 20px 18px;
+      display:flex;
+      flex-direction:column;
+      position:relative;
+      z-index:10;
+    }
+    .brand{display:flex;align-items:center;gap:14px;padding:4px 6px 22px}
+    .brandmark{width:58px;height:58px;position:relative;flex:0 0 58px}
+    .ring{position:absolute;border:5px solid;border-radius:50%;inset:8px}
+    .ring.r1{border-color:var(--orange);transform:rotate(-12deg) scale(1.04)}
+    .ring.r2{border-color:var(--lime);inset:14px;transform:rotate(28deg)}
+    .ring.r3{border-color:var(--pink);inset:20px;transform:rotate(-18deg)}
+    .dot{position:absolute;width:10px;height:10px;border-radius:50%}
+    .dot.d1{background:var(--orange);left:3px;top:22px}
+    .dot.d2{background:var(--blue);right:4px;bottom:14px}
+    .dot.d3{background:var(--yellow);left:24px;top:22px}
+    .brand h1{font-size:24px;line-height:1;margin:0 0 5px;font-weight:900;letter-spacing:-.5px}
+    .brand small{color:var(--muted);font-size:12px}
+
+    .agenda-label{font-size:12px;color:#9b9699;margin:3px 10px 10px;font-weight:700;letter-spacing:.4px}
+    .nav{display:flex;flex-direction:column;gap:6px;overflow:auto;padding-left:2px}
+    .nav button{
+      border:0;background:transparent;border-radius:16px;padding:12px 13px;text-align:right;color:#6f696d;
+      display:grid;grid-template-columns:26px 1fr auto;align-items:center;gap:8px;transition:.2s ease;
+    }
+    .nav button:hover{background:#f7f8fa;color:var(--ink)}
+    .nav button.active{background:#f3f7fa;color:var(--ink);font-weight:800;box-shadow:inset -4px 0 0 var(--blue)}
+    .nav .num{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-size:11px;font-weight:800;background:#eef2f4}
+    .nav .mins{font-size:10px;color:#aaa4a8}
+
+    .sidebar-footer{margin-top:auto;border-top:1px solid var(--line);padding-top:15px;display:grid;gap:10px}
+    .timer-wrap{background:#f7f8fa;border:1px solid var(--line);padding:12px 13px;border-radius:16px;display:flex;align-items:center;justify-content:space-between}
+    .timer{font-size:22px;font-weight:900;letter-spacing:1px}
+    .timer-label{font-size:10px;color:var(--muted);line-height:1.25}
+    .controls{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+    .control{border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:14px;padding:10px 8px;font-size:12px;font-weight:700}
+    .control.primary{background:var(--ink);color:#fff;border-color:var(--ink)}
+
+    /* MAIN */
+    .stage{position:relative;height:100vh;overflow:hidden;background:
+      radial-gradient(circle at 8% 10%, rgba(86,181,223,.12), transparent 20%),
+      radial-gradient(circle at 86% 12%, rgba(247,147,30,.10), transparent 18%),
+      radial-gradient(circle at 78% 90%, rgba(233,25,127,.07), transparent 18%),
+      var(--bg);
+    }
+    .topbar{height:72px;display:flex;align-items:center;justify-content:space-between;padding:0 34px 0 28px;position:relative;z-index:4}
+    .topbar .eyebrow{font-size:12px;color:var(--muted);font-weight:700}
+    .topbar .date{font-size:12px;color:#aaa4a8}
+    .progress{position:absolute;bottom:0;right:0;left:0;height:4px;background:#edf0f2}
+    .progress span{display:block;height:100%;width:14.2%;background:linear-gradient(90deg,var(--pink),var(--orange),var(--yellow),var(--lime),var(--blue));transition:.35s ease}
+
+    .slide{
+      position:absolute;inset:72px 0 0 0;padding:34px 46px 34px 48px;
+      opacity:0;transform:translateX(-24px) scale(.99);pointer-events:none;transition:.35s ease;
+      display:flex;flex-direction:column;justify-content:center;
+    }
+    .slide.active{opacity:1;transform:none;pointer-events:auto}
+    .slide-inner{max-width:1180px;width:100%;margin:0 auto}
+
+    .kicker{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:800;color:#666;letter-spacing:.2px;margin-bottom:12px}
+    .kicker:before{content:"";width:26px;height:4px;border-radius:10px;background:var(--orange)}
+    h2{font-size:48px;line-height:1.08;margin:0 0 16px;letter-spacing:-1.4px}
+    .lead{font-size:20px;line-height:1.65;color:#696469;margin:0;max-width:930px}
+    .accent{color:var(--pink)}
+    .accent-blue{color:#248ebc}
+
+    .hero-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:26px;align-items:stretch;margin-top:34px}
+    .hero-card{background:var(--card);border:1px solid rgba(0,0,0,.04);border-radius:32px;padding:30px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+    .hero-card:after{content:"";position:absolute;width:220px;height:220px;border:28px solid rgba(86,181,223,.08);border-radius:50%;left:-80px;bottom:-95px}
+    .handover{display:grid;grid-template-columns:1fr 74px 1fr;align-items:center;gap:10px;margin-top:22px}
+    .person{border:1px solid var(--line);border-radius:22px;padding:18px;background:#fbfcfd}
+    .person .role{font-size:12px;color:var(--muted);font-weight:700;margin-bottom:8px}
+    .person .name{font-size:25px;font-weight:900;margin-bottom:4px}
+    .person .sub{font-size:12px;color:#908b8f}
+    .arrow{display:grid;place-items:center;font-size:34px;color:var(--blue)}
+    .quote-card{background:var(--ink);color:#fff;border-radius:30px;padding:28px;display:flex;flex-direction:column;justify-content:space-between;box-shadow:var(--shadow)}
+    .quote-card .quote{font-size:28px;line-height:1.45;font-weight:800;margin-top:12px}
+    .quote-card .mini{font-size:12px;color:#d8d5d7}
+    .pill{display:inline-flex;align-items:center;gap:7px;width:max-content;border-radius:999px;padding:8px 12px;font-size:11px;font-weight:800;background:rgba(255,255,255,.11)}
+
+    .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:30px}
+    .grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:28px}
+    .card{background:#fff;border:1px solid var(--line);border-radius:24px;padding:22px;box-shadow:0 12px 30px rgba(46,45,50,.06)}
+    .card .icon{width:44px;height:44px;border-radius:15px;display:grid;place-items:center;font-size:20px;margin-bottom:18px;background:#f1f7f9}
+    .card h3{font-size:18px;margin:0 0 8px}
+    .card p{font-size:14px;line-height:1.65;margin:0;color:#777176}
+    .card strong{color:var(--ink)}
+    .card.orange .icon{background:#fff2e5}.card.pink .icon{background:#fdeaf3}.card.lime .icon{background:#f1f7e7}.card.blue .icon{background:#e9f6fb}
+
+    .statement{margin-top:28px;background:linear-gradient(135deg,#fff,#f9fbfc);border:1px solid var(--line);border-radius:28px;padding:24px 28px;display:flex;align-items:center;gap:20px;box-shadow:0 12px 30px rgba(46,45,50,.05)}
+    .statement .bubble{width:58px;height:58px;border-radius:18px;background:var(--yellow);display:grid;place-items:center;font-size:24px;flex:0 0 58px}
+    .statement strong{font-size:20px;display:block;margin-bottom:4px}
+    .statement span{font-size:14px;color:#767074;line-height:1.55}
+
+    .layers{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:34px;border-radius:28px;overflow:hidden;box-shadow:var(--shadow)}
+    .layer{padding:28px 23px;min-height:230px;color:#fff;display:flex;flex-direction:column;justify-content:space-between;position:relative}
+    .layer:nth-child(1){background:#4ba8ce}.layer:nth-child(2){background:#78ae44}.layer:nth-child(3){background:#ed8e2a}.layer:nth-child(4){background:#d94b86}
+    .layer .no{font-size:46px;font-weight:900;opacity:.22;line-height:1}
+    .layer h3{font-size:22px;margin:0 0 9px}.layer p{font-size:14px;line-height:1.6;margin:0;opacity:.94}
+
+    .policy-box{margin-top:26px;display:grid;grid-template-columns:1fr 1fr;gap:20px}
+    .policy-main{background:#fff;border-radius:28px;padding:28px;box-shadow:var(--shadow);border:1px solid var(--line)}
+    .policy-main h3{font-size:22px;margin:0 0 12px}.policy-main p{font-size:16px;line-height:1.75;color:#6f696d;margin:0}
+    .policy-side{display:grid;gap:12px}
+    .mini-card{background:#fff;border:1px solid var(--line);border-radius:20px;padding:17px 18px;display:grid;grid-template-columns:42px 1fr;gap:13px;align-items:center}
+    .mini-card .badge{width:42px;height:42px;border-radius:13px;display:grid;place-items:center;background:#f2f6f8;font-weight:900;color:#258fb9}
+    .mini-card strong{font-size:14px}.mini-card span{font-size:12px;color:#817b80;display:block;margin-top:3px;line-height:1.45}
+
+    .checklist{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:28px}
+    .check{background:#fff;border:1px solid var(--line);border-radius:20px;padding:18px;display:flex;align-items:flex-start;gap:12px;min-height:92px}
+    .tick{width:28px;height:28px;border-radius:9px;background:#eaf6ef;color:var(--success);display:grid;place-items:center;font-weight:900;flex:0 0 28px}
+    .check strong{display:block;font-size:14px;margin-bottom:4px}.check span{font-size:12px;line-height:1.45;color:#817b80}
+
+    .scenario-wrap{display:grid;grid-template-columns:1fr .95fr;gap:22px;margin-top:28px}
+    .scenario{background:#fff;border:1px solid var(--line);border-radius:28px;padding:28px;box-shadow:var(--shadow)}
+    .scenario .tag{display:inline-flex;padding:7px 10px;border-radius:999px;background:#fff2e6;color:#a55b12;font-size:11px;font-weight:800;margin-bottom:14px}
+    .scenario h3{font-size:25px;margin:0 0 12px}.scenario p{font-size:16px;line-height:1.7;color:#6f696d;margin:0}
+    .response{background:var(--ink);color:#fff;border-radius:28px;padding:28px;display:flex;flex-direction:column;justify-content:center}
+    .response h3{font-size:25px;margin:0 0 16px}.response ol{margin:0;padding:0 20px 0 0;display:grid;gap:12px}.response li{font-size:15px;line-height:1.5;color:#f3f0f1}
+    .response .gold{color:var(--yellow);font-weight:800}
+
+    .big-3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:32px}
+    .big-card{background:#fff;border:1px solid var(--line);border-radius:28px;padding:28px;text-align:center;box-shadow:0 14px 34px rgba(46,45,50,.06)}
+    .big-card .n{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;margin:0 auto 15px;font-size:21px;font-weight:900;color:#fff}
+    .big-card:nth-child(1) .n{background:var(--pink)}.big-card:nth-child(2) .n{background:var(--orange)}.big-card:nth-child(3) .n{background:var(--blue)}
+    .big-card h3{margin:0 0 8px;font-size:20px}.big-card p{margin:0;color:#797378;font-size:14px;line-height:1.6}
+    .closing{margin-top:22px;border-radius:28px;padding:23px 26px;background:linear-gradient(100deg,#f8fbfc,#fff);border:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
+    .closing .left strong{font-size:18px}.closing .left span{display:block;font-size:12px;color:var(--muted);margin-top:4px}
+    .closing .cta{font-size:14px;font-weight:900;color:#267fa6}
+
+    .footer-hint{position:absolute;left:28px;bottom:18px;display:flex;align-items:center;gap:8px;color:#a39da1;font-size:11px;z-index:5}
+    .kbd{padding:4px 7px;border:1px solid #d8dcdf;background:#fff;border-radius:7px;box-shadow:0 2px 5px rgba(0,0,0,.04);font-weight:800;color:#7f797d}
+
+    .speaker-note{position:absolute;left:28px;top:88px;width:260px;background:#fff8dc;border:1px solid #f0df93;border-radius:18px;padding:15px;box-shadow:0 10px 28px rgba(0,0,0,.08);font-size:12px;line-height:1.55;color:#75682b;display:none;z-index:20}
+    .speaker-note.show{display:block}
+    .speaker-note strong{display:block;color:#5d531d;margin-bottom:5px}
+
+    .toast{position:absolute;left:28px;bottom:54px;background:#202124;color:#fff;border-radius:14px;padding:10px 14px;font-size:12px;opacity:0;transform:translateY(8px);transition:.2s;z-index:30;pointer-events:none}
+    .toast.show{opacity:1;transform:none}
+
+    @media (max-width: 1000px){
+      .app{grid-template-columns:230px 1fr}.sidebar{padding:18px 14px}.brand h1{font-size:20px}
+      .slide{padding:28px}.hero-grid,.scenario-wrap,.policy-box{grid-template-columns:1fr}.grid-4{grid-template-columns:repeat(2,1fr)}
+      .grid-3,.big-3,.checklist{grid-template-columns:repeat(2,1fr)}h2{font-size:40px}
+    }
+
+    @media (max-width: 760px){
+      html,body{overflow:auto}.app{display:block;height:auto}.sidebar{position:sticky;top:0;z-index:50;border-left:0;border-bottom:1px solid var(--line);padding:10px 12px}
+      .brand{padding:0}.brandmark{width:42px;height:42px;flex-basis:42px}.brand small,.agenda-label,.nav,.sidebar-footer{display:none}
+      .stage{height:auto;min-height:100vh;overflow:visible}.topbar{position:sticky;top:62px;background:rgba(246,248,250,.93);backdrop-filter:blur(10px)}
+      .slide{position:relative;inset:auto;opacity:1;transform:none;pointer-events:auto;min-height:auto;padding:42px 20px;border-bottom:1px solid var(--line)}
+      .hero-grid,.grid-3,.grid-4,.layers,.policy-box,.checklist,.scenario-wrap,.big-3{grid-template-columns:1fr}.layers{display:grid}.handover{grid-template-columns:1fr}.arrow{transform:rotate(90deg)}
+      h2{font-size:36px}.lead{font-size:17px}.footer-hint{display:none}
+    }
+  </style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brandmark" aria-hidden="true">
+        <div class="ring r1"></div><div class="ring r2"></div><div class="ring r3"></div>
+        <i class="dot d1"></i><i class="dot d2"></i><i class="dot d3"></i>
+      </div>
+      <div><h1>טכנודע</h1><small>ביטחון ובטיחות · ישיבת הנהלה</small></div>
+    </div>
+
+    <div class="agenda-label">מהלך ההצגה · 20 דקות</div>
+    <nav class="nav" id="nav">
+      <button class="active" data-slide="0"><span class="num">1</span><span>העברת תפקיד</span><span class="mins">2 דק׳</span></button>
+      <button data-slide="1"><span class="num">2</span><span>למה זה נושא הנהלה</span><span class="mins">3 דק׳</span></button>
+      <button data-slide="2"><span class="num">3</span><span>איך חושבים בטיחות</span><span class="mins">3 דק׳</span></button>
+      <button data-slide="3"><span class="num">4</span><span>חוזר מנכ״ל ואחריות</span><span class="mins">4 דק׳</span></button>
+      <button data-slide="4"><span class="num">5</span><span>טיולים ופעילות חוץ</span><span class="mins">3 דק׳</span></button>
+      <button data-slide="5"><span class="num">6</span><span>דוגמה מהשטח</span><span class="mins">3 דק׳</span></button>
+      <button data-slide="6"><span class="num">7</span><span>מסכמים לפעולה</span><span class="mins">2 דק׳</span></button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="timer-wrap">
+        <div><div class="timer-label">טיימר להצגה</div><div class="timer" id="timer">20:00</div></div>
+        <button class="control primary" id="timerBtn" style="width:84px">התחל</button>
+      </div>
+      <div class="controls">
+        <button class="control" id="noteBtn">הערות מרצה</button>
+        <button class="control" id="fullBtn">מסך מלא</button>
+      </div>
+    </div>
+  </aside>
+
+  <main class="stage" id="stage">
+    <header class="topbar">
+      <div><div class="eyebrow">ישיבת הנהלה · ביטחון ובטיחות בטכנודע</div></div>
+      <div class="date">עדכון הנהלה · 20 דקות</div>
+      <div class="progress"><span id="progress"></span></div>
+    </header>
+
+    <div class="speaker-note" id="speakerNote"></div>
+
+    <!-- 1 -->
+    <section class="slide active" data-note="פתח קצר: המטרה איננה להציג עכשיו את כל הנהלים, אלא לעשות יישור קו הנהלתי. הודע על העברת התפקיד לעזריאל שניידר, והדגש שהמעבר צריך להיות רציף ומסודר.">
+      <div class="slide-inner">
+        <div class="kicker">עדכון ראשון להנהלה</div>
+        <h2>העברת האחריות על <span class="accent-blue">ביטחון ובטיחות</span></h2>
+        <p class="lead">אחרי תקופה שבה ריכזתי את התחום, עזריאל שניידר נכנס לתפקיד ויוביל מעתה את נושאי הביטחון והבטיחות בטכנודע.</p>
+        <div class="hero-grid">
+          <div class="hero-card">
+            <div class="pill" style="background:#eef7fb;color:#247da2">מעבר תפקיד מסודר</div>
+            <div class="handover">
+              <div class="person"><div class="role">עד היום</div><div class="name">אלי זריהן</div><div class="sub">אחראי ביטחון ובטיחות</div></div>
+              <div class="arrow">←</div>
+              <div class="person"><div class="role">מעתה</div><div class="name">עזריאל שניידר</div><div class="sub">נכנס לאחריות על התחום</div></div>
+            </div>
+          </div>
+          <div class="quote-card">
+            <div class="pill">המטרה ב־20 דקות</div>
+            <div class="quote">לא ללמוד נהלים בעל־פה — אלא להבין <span style="color:var(--yellow)">איך הנהלה חושבת בטיחות.</span></div>
+            <div class="mini">לראות · לשאול · לעצור כשצריך · לדווח</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2 -->
+    <section class="slide" data-note="כאן כדאי להדגיש שבטיחות אינה רק משימה של ממונה אחד. מנהלים מקבלים החלטות על כוח אדם, פעילות, לוחות זמנים, קהל, ספקים ויציאה מחוץ לטכנודע — ולכן יש להם השפעה ישירה על רמת הבטיחות.">
+      <div class="slide-inner">
+        <div class="kicker">תפיסה ניהולית</div>
+        <h2>למה זה בכלל <span class="accent">נושא הנהלה?</span></h2>
+        <p class="lead">כי כמעט כל החלטה תפעולית — אנשים, פעילות, קהל, מקום, לוחות זמנים או יציאה החוצה — יכולה לכלול גם היבט של בטיחות או ביטחון.</p>
+        <div class="grid-3">
+          <div class="card blue"><div class="icon">👥</div><h3>אנשים</h3><p>ילדים, הורים, עובדים, מדריכים, ספקים ומבקרים. <strong>מי נמצא אצלנו, מי אחראי ומי יודע מה לעשות?</strong></p></div>
+          <div class="card orange"><div class="icon">🏢</div><h3>הסביבה</h3><p>כניסות, מעבדות, חדרים, ציוד, חצרות ושטחים משותפים. <strong>האם המרחב בטוח ומתאים לפעילות?</strong></p></div>
+          <div class="card pink"><div class="icon">🧭</div><h3>החלטות</h3><p>שינוי תכנית, אירוע חריג, יציאה לטיול, מחסור בכוח אדם. <strong>מי עוצר לרגע ובודק את המשמעות?</strong></p></div>
+        </div>
+        <div class="statement"><div class="bubble">!</div><div><strong>בטיחות טובה מתחילה לפני האירוע — לא אחרי האירוע.</strong><span>תפקיד ההנהלה הוא להכניס את השאלה “מה ההיבט הבטיחותי כאן?” לתוך תהליך קבלת ההחלטות.</span></div></div>
+      </div>
+    </section>
+
+    <!-- 3 -->
+    <section class="slide" data-note="הצג את ארבעת השלבים כדרך חשיבה קבועה: למנוע, לזהות, להגיב, ללמוד. זה הופך בטיחות מתיק נהלים לתרבות עבודה.">
+      <div class="slide-inner">
+        <div class="kicker">מודל עבודה פשוט</div>
+        <h2>איך חושבים ביטחון ובטיחות?</h2>
+        <p class="lead">ארבע שכבות פשוטות שעוזרות לקבל החלטות גם בלי לזכור כל סעיף בכל נוהל.</p>
+        <div class="layers">
+          <div class="layer"><div class="no">01</div><div><h3>מניעה</h3><p>לתכנן מראש, להגדיר אחריות, לבצע תיאומים ולהקטין סיכונים לפני תחילת הפעילות.</p></div></div>
+          <div class="layer"><div class="no">02</div><div><h3>זיהוי</h3><p>לשים לב למה שלא נראה תקין: כניסה, ציוד, צפיפות, התנהגות או תנאי פעילות.</p></div></div>
+          <div class="layer"><div class="no">03</div><div><h3>תגובה</h3><p>לעצור כשצריך, לערב את הגורם האחראי, ליצור מענה מהיר ולמנוע החמרה.</p></div></div>
+          <div class="layer"><div class="no">04</div><div><h3>למידה</h3><p>לדווח, לתחקר ולוודא שהלקח הופך לשינוי בפועל ולא נשאר רק בשיחה.</p></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4 -->
+    <section class="slide" data-note="ניסוח זה בכוונה כללי: ברוב התכניות בטכנודע אנחנו פועלים תחת הנחיות משרד החינוך וחוזרי מנכ״ל רלוונטיים. אל תיכנס כאן לסעיפים. המסר הוא שחוזר מנכ״ל איננו מסמך של ממונה הבטיחות בלבד — הוא משפיע על הדרך שבה מפעילים תכנית.">
+      <div class="slide-inner">
+        <div class="kicker">מסגרת מחייבת</div>
+        <h2>חוזר מנכ״ל, נהלים — ומה זה אומר להנהלה</h2>
+        <p class="lead">ברוב התכניות שלנו קיימת כפיפות להנחיות משרד החינוך ולחוזרי מנכ״ל הרלוונטיים. המשמעות: בטיחות וביטחון צריכים להיות חלק מהתכנון, מהביצוע ומהבקרה.</p>
+        <div class="policy-box">
+          <div class="policy-main">
+            <h3>המסר החשוב</h3>
+            <p>האחריות המקצועית מרוכזת אצל בעל התפקיד, אבל <strong>המודעות אינה שייכת לאדם אחד.</strong> מנהל שמאשר פעילות, מקבל החלטה תפעולית או רואה מפגע — הוא חלק ממערכת ההגנה של הארגון.</p>
+          </div>
+          <div class="policy-side">
+            <div class="mini-card"><div class="badge">א׳</div><div><strong>לפני פעילות</strong><span>לבדוק מי אחראי, אילו אישורים ותיאומים נדרשים ומהם הסיכונים.</span></div></div>
+            <div class="mini-card"><div class="badge">ב׳</div><div><strong>במהלך פעילות</strong><span>להיות ערניים לשינויים, חריגות ותנאים שאינם תואמים את התכנון.</span></div></div>
+            <div class="mini-card"><div class="badge">ג׳</div><div><strong>באירוע חריג</strong><span>לעצור, לדווח, לערב את הגורם המתאים ולוודא שיש סגירת מעגל.</span></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5 -->
+    <section class="slide" data-note="דוגמה טובה לחברי הנהלה: יציאה לטיול/סיור/פעילות חוץ. לא צריך להפוך אותם למנהלי בטיחות — כן צריך שידעו לעצור רגע ולבדוק שקיים מענה. אפשר לתת דוגמה מאירוע שהם מכירים.">
+      <div class="slide-inner">
+        <div class="kicker">דוגמה ניהולית</div>
+        <h2>מוציאים טיול או פעילות חוץ? <span class="accent-blue">עוצרים לדקה.</span></h2>
+        <p class="lead">גם אם הפעילות “שייכת” לתוכן, חינוך או קהילה — לפני שמאשרים אותה צריך לראות גם את שכבת הבטיחות והביטחון.</p>
+        <div class="checklist">
+          <div class="check"><div class="tick">✓</div><div><strong>אחראי ברור</strong><span>מי מנהל את הפעילות ומי בעל הסמכות בשטח?</span></div></div>
+          <div class="check"><div class="tick">✓</div><div><strong>אישורים ותיאומים</strong><span>לוודא שהאישורים הרלוונטיים אכן בוצעו לפני היציאה.</span></div></div>
+          <div class="check"><div class="tick">✓</div><div><strong>רשימות ומשתתפים</strong><span>מי יוצא, מי חוזר, ואיך יודעים שכולם נמצאים?</span></div></div>
+          <div class="check"><div class="tick">✓</div><div><strong>מענה רפואי</strong><span>להבין מראש מהו המענה במקרה של פציעה או אירוע רפואי.</span></div></div>
+          <div class="check"><div class="tick">✓</div><div><strong>תכנית חירום</strong><span>מה עושים אם התכנית משתנה, נתקעים בדרך או מתרחש אירוע חריג?</span></div></div>
+          <div class="check"><div class="tick">✓</div><div><strong>תקשורת</strong><span>למי מדווחים, למי מתקשרים ואיך נשמרת שליטה באירוע?</span></div></div>
+        </div>
+        <div class="statement"><div class="bubble" style="background:#e9f6fb">?</div><div><strong>שאלה ניהולית אחת יכולה למנוע אירוע:</strong><span>“לפני שמתקדמים — מי בדק את היבטי הבטיחות והביטחון?”</span></div></div>
+      </div>
+    </section>
+
+    <!-- 6 -->
+    <section class="slide" data-note="כאן השתמש בדוגמה שלך: חבר הנהלה נכנס, רואה שאין שומר בעמדה ויש הרבה ילדים. הדגש: לא ממשיכים אוטומטית מתוך הנחה שמישהו אחר כבר מטפל. לא חייבים לפתור לבד — כן חייבים להציף ולוודא שנוצר מענה.">
+      <div class="slide-inner">
+        <div class="kicker">תרבות של ערנות</div>
+        <h2>רואים משהו לא תקין? <span class="accent">לא מתעלמים.</span></h2>
+        <div class="scenario-wrap">
+          <div class="scenario">
+            <div class="tag">דוגמה מהכניסה לטכנודע</div>
+            <h3>נכנסתם למתחם, יש הרבה ילדים — ואין שומר בעמדה.</h3>
+            <p>אולי הוא בסיור. אולי הוחלף. אולי יש סיבה טובה. אבל עצם זה שהמצב חריג לעין מחייב <strong>בדיקה ולא הנחה.</strong></p>
+          </div>
+          <div class="response">
+            <h3>מה עושים?</h3>
+            <ol>
+              <li><span class="gold">שמים לב</span> ולא עוברים הלאה אוטומטית.</li>
+              <li><span class="gold">בודקים</span> מול הגורם האחראי מה המצב.</li>
+              <li><span class="gold">מוודאים</span> שיש מענה ולא רק “דיווחתי”.</li>
+              <li><span class="gold">סוגרים מעגל</span> אם נדרשת פעולה או למידה להמשך.</li>
+            </ol>
+          </div>
+        </div>
+        <div class="statement"><div class="bubble">👁</div><div><strong>הנהלה היא עוד זוג עיניים.</strong><span>המטרה איננה להחליף את בעל התפקיד — אלא לזהות, לשאול ולהציף בזמן.</span></div></div>
+      </div>
+    </section>
+
+    <!-- 7 -->
+    <section class="slide" data-note="סיים בשלוש ציפיות ברורות מהנהלה: לראות, לשאול, לדווח. חזור לעדכון שעזריאל נכנס לתפקיד. אם רוצים, אפשר להקדיש את הדקה האחרונה לשאלות או למקרה אמיתי שמטריד את ההנהלה.">
+      <div class="slide-inner">
+        <div class="kicker">סיכום</div>
+        <h2>שלוש ציפיות פשוטות מחברי הנהלה</h2>
+        <p class="lead">לא צריך להיות מומחי בטיחות. כן צריך להיות מנהלים שרואים את התמונה המלאה.</p>
+        <div class="big-3">
+          <div class="big-card"><div class="n">1</div><h3>לראות</h3><p>לא להתעלם ממשהו שנראה חריג, מסוכן או לא מסודר.</p></div>
+          <div class="big-card"><div class="n">2</div><h3>לשאול</h3><p>להכניס לכל החלטה גם את השאלה: “מה היבט הבטיחות והביטחון כאן?”</p></div>
+          <div class="big-card"><div class="n">3</div><h3>לדווח ולסגור מעגל</h3><p>לוודא שהנושא עבר לגורם המתאים ושנוצר מענה בפועל.</p></div>
+        </div>
+        <div class="closing">
+          <div class="left"><strong>עזריאל שניידר נכנס להוביל את תחום הביטחון והבטיחות</strong><span>העברת אחריות מסודרת · כתובת ברורה · תרבות ארגונית של ערנות</span></div>
+          <div class="cta">בטיחות היא דרך עבודה, לא רק נוהל.</div>
+        </div>
+      </div>
+    </section>
+
+    <div class="footer-hint"><span class="kbd">→</span><span class="kbd">←</span><span>מעבר בין נושאים</span><span class="kbd">N</span><span>הערות מרצה</span></div>
+    <div class="toast" id="toast">הטיימר התחיל</div>
+  </main>
+</div>
+
+<script>
+  const slides=[...document.querySelectorAll('.slide')];
+  const navButtons=[...document.querySelectorAll('.nav button')];
+  const progress=document.getElementById('progress');
+  const note=document.getElementById('speakerNote');
+  const noteBtn=document.getElementById('noteBtn');
+  let current=0;
+  let notesOn=false;
+
+  function showSlide(i){
+    current=Math.max(0,Math.min(slides.length-1,i));
+    slides.forEach((s,idx)=>s.classList.toggle('active',idx===current));
+    navButtons.forEach((b,idx)=>b.classList.toggle('active',idx===current));
+    progress.style.width=((current+1)/slides.length*100)+'%';
+    note.innerHTML='<strong>הערת מרצה</strong>'+slides[current].dataset.note;
+    note.classList.toggle('show',notesOn);
+  }
+
+  navButtons.forEach(btn=>btn.addEventListener('click',()=>showSlide(Number(btn.dataset.slide))));
+  noteBtn.addEventListener('click',()=>{notesOn=!notesOn;noteBtn.textContent=notesOn?'הסתר הערות':'הערות מרצה';showSlide(current)});
+
+  document.addEventListener('keydown',e=>{
+    if(['ArrowLeft','PageDown',' '].includes(e.key)){e.preventDefault();showSlide(current+1)}
+    if(['ArrowRight','PageUp'].includes(e.key)){e.preventDefault();showSlide(current-1)}
+    if(e.key.toLowerCase()==='n'){notesOn=!notesOn;noteBtn.textContent=notesOn?'הסתר הערות':'הערות מרצה';showSlide(current)}
+    if(e.key==='Home')showSlide(0);
+    if(e.key==='End')showSlide(slides.length-1);
+  });
+
+  document.getElementById('fullBtn').addEventListener('click',async()=>{
+    if(!document.fullscreenElement){await document.documentElement.requestFullscreen?.()}
+    else{await document.exitFullscreen?.()}
+  });
+
+  // 20-minute presentation timer
+  const timerEl=document.getElementById('timer');
+  const timerBtn=document.getElementById('timerBtn');
+  const toast=document.getElementById('toast');
+  let seconds=20*60, running=false, handle=null;
+  function renderTimer(){
+    const m=Math.floor(seconds/60).toString().padStart(2,'0');
+    const s=(seconds%60).toString().padStart(2,'0');
+    timerEl.textContent=`${m}:${s}`;
+    timerEl.style.color=seconds<=120?'#c64343':'var(--ink)';
+  }
+  function showToast(text){toast.textContent=text;toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),1500)}
+  timerBtn.addEventListener('click',()=>{
+    if(!running){
+      if(seconds<=0)seconds=20*60;
+      running=true;timerBtn.textContent='עצור';showToast('הטיימר התחיל');
+      handle=setInterval(()=>{
+        seconds--;renderTimer();
+        if(seconds===120)showToast('נותרו 2 דקות');
+        if(seconds<=0){clearInterval(handle);running=false;timerBtn.textContent='איפוס';showToast('20 דקות הסתיימו')}
+      },1000);
+    } else {
+      running=false;clearInterval(handle);timerBtn.textContent='המשך';showToast('הטיימר נעצר');
+    }
+  });
+  timerBtn.addEventListener('dblclick',()=>{clearInterval(handle);running=false;seconds=20*60;renderTimer();timerBtn.textContent='התחל';showToast('הטיימר אופס')});
+
+  renderTimer();showSlide(0);
+</script>
+</body>
+</html>
